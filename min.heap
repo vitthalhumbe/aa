@@ -1,0 +1,60 @@
+#include <iostream>
+using namespace std;
+#define MAX 100
+
+class MinHeap {
+    int heap[MAX];
+    int size = 0;
+
+public:
+    bool empty() { return size == 0; }
+
+    void insert(int val) {
+        int i = size++;
+        heap[i] = val;
+        // bubble up: while child < parent, swap
+        while (i != 0 && heap[(i-1)/2] > heap[i]) {
+            swap(heap[i], heap[(i-1)/2]);
+            i = (i-1)/2;
+        }
+    }
+
+    int extractMin() {
+        int root = heap[0];
+        heap[0] = heap[--size];  // move last element to root
+        int i = 0;
+        // bubble down: swap with smaller child until heap property restored
+        while (true) {
+            int left = 2*i+1, right = 2*i+2, smallest = i;
+            if (left  < size && heap[left]  < heap[smallest]) smallest = left;
+            if (right < size && heap[right] < heap[smallest]) smallest = right;
+            if (smallest == i) break;
+            swap(heap[i], heap[smallest]);
+            i = smallest;
+        }
+        return root;
+    }
+
+    void display() {
+        for (int i = 0; i < size; i++) cout << heap[i] << " ";
+        cout << "\n";
+    }
+};
+
+int main() {
+    MinHeap h;
+    int ch, val;
+    do {
+        cout << "\n1.Insert 2.ExtractMin 3.Display 4.Exit\n>> ";
+        cin >> ch;
+        switch (ch) {
+            case 1: cout << "Val: "; cin >> val; h.insert(val); break;
+            case 2:
+                if (!h.empty()) cout << "Min: " << h.extractMin() << "\n";
+                else cout << "Heap empty\n";
+                break;
+            case 3: h.display(); break;
+            case 4: break;
+        }
+    } while (ch != 4);
+}
